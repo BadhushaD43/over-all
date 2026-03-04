@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import SearchBar from "./SearchBar";
@@ -9,6 +9,7 @@ const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const { isDarkMode, toggleDarkMode } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
   const [showProfile, setShowProfile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -20,6 +21,14 @@ const Navbar = () => {
 
   const handleLoginClick = () => {
     navigate('/login');
+  };
+
+  const handleSearch = (query) => {
+    if (query.trim()) {
+      navigate(`/?search=${encodeURIComponent(query)}`);
+    } else {
+      navigate('/');
+    }
   };
 
   return (
@@ -39,7 +48,7 @@ const Navbar = () => {
         </ul>
 
         <div className="navbar-search">
-          <SearchBar onSearch={(query) => console.log(query)} />
+          <SearchBar onSearch={handleSearch} />
         </div>
 
         <div className="navbar-right">

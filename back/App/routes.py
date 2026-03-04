@@ -87,6 +87,10 @@ def trending_movies(page: int = 1):
 def search_movie(q: str):
     return tmdb_service.search_movies(q)
 
+@router.get("/movie/{movie_id}/videos")
+def get_movie_videos(movie_id: int, language: str = "en"):
+    return tmdb_service.get_movie_videos(movie_id, language)
+
 @router.post("/watchlist")
 def add_to_watchlist(movie: WatchlistCreate, db: Session = Depends(get_db)):
     return crud.add_movie(db, movie)

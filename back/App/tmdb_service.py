@@ -17,3 +17,10 @@ def search_movies(query):
         "api_key": API_KEY,
         "query": query
     }).json()
+
+def get_movie_videos(movie_id: int, language: str = "en"):
+    url = f"{BASE_URL}/movie/{movie_id}/videos"
+    return requests.get(url, params={
+        "api_key": API_KEY,
+        "language": language
+    }).json()

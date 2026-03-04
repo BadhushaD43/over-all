@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
-import { fetchTrending } from "../services/tmdb";
+import { useSearchParams } from "react-router-dom";
+import { fetchTrending, searchMovies } from "../services/tmdb";
 import MovieCard from "../components/MovieCard";
 import "./Home.css";
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
-  const [language, setLanguage] = useState(
-    localStorage.getItem("language") || "en-US"
-  );
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search');
 
   useEffect(() => {
-    fetchTrending().then(data => setMovies(data.results));
-  }, []);
-  
-  useEffect(() => {
-    localStorage.setItem("language", language);
-  }, [language]);
+    if (searchQuery) {
+      searchMovies(searchQuery).then(data => setMovies(data.results || []));
+    } else {
+      fetchTrending().then(data => setMovies(data.results || []));
+    }
+  }, [searchQuery]);
 
   return (
     <div className="home-container">
       <div className="movies-header">
-        <h2>Trending Now</h2>
-        <p>Discover the hottest movies and shows</p>
+        <h2>{searchQuery ? `Search Results for "${searchQuery}"` : 'Trending Now'}</h2>
+        <p>{searchQuery ? `Found ${movies.length} movies` : 'Discover the hottest movies and shows'}</p>
       </div>
       <div className="movie-grid">
         {movies.length > 0 ? (
@@ -29,7 +29,7 @@ const Home = () => {
             <MovieCard key={movie.id} movie={movie} />
           ))
         ) : (
-          <div className="loading">Loading movies...</div>
+          <div className="loading">{searchQuery ? 'No movies found' : 'Loading movies...'}</div>
         )}
       </div>
     </div>

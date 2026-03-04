@@ -10,6 +10,7 @@ const MovieDetail = () => {
   const [movie, setMovie] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [showVideo, setShowVideo] = useState(false);
+  const [videoKey, setVideoKey] = useState(null);
   const API_KEY = "8265bd1679663a7ea12ac168da84d2e8";
 
   useEffect(() => {
@@ -36,12 +37,22 @@ const MovieDetail = () => {
     }
   };
 
-  const handlePlayVideo = () => {
+  const handlePlayVideo = async () => {
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
-    setShowVideo(true);
+    try {
+      const response = await fetch(`http://localhost:8000/movie/${id}/videos?language=${selectedLanguage}`);
+      const data = await response.json();
+      const trailer = data.results?.find(v => v.type === "Trailer" && v.site === "YouTube") || data.results?.[0];
+      if (trailer) {
+        setVideoKey(trailer.key);
+        setShowVideo(true);
+      }
+    } catch (error) {
+      console.error('Failed to fetch video:', error);
+    }
   };
 
   if (!movie) return <div className="loading">Loading...</div>;
@@ -55,6 +66,7 @@ const MovieDetail = () => {
     { code: 'pt', name: 'Portuguese' },
     { code: 'ja', name: 'Japanese' },
     { code: 'zh', name: 'Chinese' },
+    { code: 'ta', name: 'Tamil' },
   ];
 
   return (
@@ -66,7 +78,7 @@ const MovieDetail = () => {
           <h1>{movie.title}</h1>
           <p className="tagline">{movie.tagline}</p>
           <div className="meta">
-            <span>⭐ {movie.vote_average}/10</span>
+            <span>⭐ {movie.vote_average?.toFixed(1) || 0}/10</span>
             <span>📅 {movie.release_date}</span>
             <span>⏱️ {movie.runtime} min</span>
           </div>
@@ -99,14 +111,15 @@ const MovieDetail = () => {
             </button>
           </div>
 
-          {showVideo && (
+          {showVideo && videoKey && (
             <div className="video-modal">
               <div className="video-container">
                 <button className="close-video" onClick={() => setShowVideo(false)}>✕</button>
+                <p className="video-source">Video Source: <strong>https://www.youtube.com/embed/{videoKey}</strong></p>
                 <iframe
                   width="100%"
                   height="600"
-                  src={`https://www.youtube.com/embed/dQw4w9WgXcQ`}
+                  src={`https://www.youtube.com/embed/${videoKey}?autoplay=1`}
                   title={movie.title}
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
