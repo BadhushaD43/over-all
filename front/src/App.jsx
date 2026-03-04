@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import MovieDetail from "./pages/MovieDetail";
+import Trending from "./pages/Trending";
 import { useAuth } from "./context/AuthContext";
 import "./App.css";
 
@@ -20,7 +21,7 @@ function AppContent() {
             <Navbar />
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/trending" element={<Home />} />
+                <Route path="/trending" element={<Trending />} />
                 <Route path="/search" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/movie/:id" element={<MovieDetail />} />

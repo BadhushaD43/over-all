@@ -13,7 +13,7 @@ const MovieCard = ({ movie }) => {
         alt={movie.title}
       />
       <h3>{movie.title}</h3>
-      <p>⭐ {movie.vote_average}</p>
+      <p>⭐ {movie.vote_average?.toFixed(1) || 0}</p>
       <p>{movie.overview?.slice(0, 100)}...</p>
     </div>
   );

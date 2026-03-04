@@ -11,6 +11,7 @@ const MovieDetail = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [showVideo, setShowVideo] = useState(false);
   const [videoKey, setVideoKey] = useState(null);
+  const [relatedMovies, setRelatedMovies] = useState([]);
   const API_KEY = "8265bd1679663a7ea12ac168da84d2e8";
 
   useEffect(() => {
@@ -24,6 +25,10 @@ const MovieDetail = () => {
     fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=${selectedLanguage}`)
       .then(res => res.json())
       .then(data => setMovie(data));
+    
+    fetch(`https://api.themoviedb.org/3/movie/${id}/similar?api_key=${API_KEY}&language=${selectedLanguage}`)
+      .then(res => res.json())
+      .then(data => setRelatedMovies(data.results?.slice(0, 6) || []));
   }, [id, selectedLanguage]);
 
   const handleLanguageChange = async (language) => {
@@ -43,7 +48,7 @@ const MovieDetail = () => {
       return;
     }
     try {
-      const response = await fetch(`http://localhost:8000/movie/${id}/videos?language=${selectedLanguage}`);
+      const response = await fetch(`https://api.themoviedb.org/3/movie/${id}/videos?api_key=${API_KEY}&language=${selectedLanguage}`);
       const data = await response.json();
       const trailer = data.results?.find(v => v.type === "Trailer" && v.site === "YouTube") || data.results?.[0];
       if (trailer) {
@@ -131,6 +136,23 @@ const MovieDetail = () => {
           )}
         </div>
       </div>
+
+      {relatedMovies.length > 0 && (
+        <div className="related-section">
+          <h2>Related Movies</h2>
+          <div className="related-grid">
+            {relatedMovies.map(m => (
+              <div key={m.id} className="related-card" onClick={() => navigate(`/movie/${m.id}`)}>
+                <img src={`https://image.tmdb.org/t/p/w300${m.poster_path}`} alt={m.title} />
+                <div className="related-info">
+                  <h3>{m.title}</h3>
+                  <span>⭐ {m.vote_average?.toFixed(1) || 0}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
