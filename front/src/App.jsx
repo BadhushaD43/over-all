@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import MovieDetail from "./pages/MovieDetail";
 import Trending from "./pages/Trending";
+import Profile from "./pages/Profile";
 import { useAuth } from "./context/AuthContext";
 import "./App.css";
 
@@ -24,6 +25,7 @@ function AppContent() {
                 <Route path="/trending" element={<Trending />} />
                 <Route path="/search" element={<Home />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/movie/:id" element={<MovieDetail />} />
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>

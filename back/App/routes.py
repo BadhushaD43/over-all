@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from .database import SessionLocal
-from .schemas import WatchlistCreate, UserCreate, UserLogin, Token, UserOut
+from .schemas import WatchlistCreate, UserCreate, UserLogin, Token, UserOut, UserUpdate, PasswordChange
 from . import crud, tmdb_service
 from .auth import (
     verify_password,
@@ -78,10 +78,25 @@ def update_language(language: str, current_user = Depends(get_current_user), db:
     user = crud.update_user_language(db, current_user.id, language)
     return user
 
+@router.put("/auth/profile", response_model=UserOut)
+def update_profile(profile: UserUpdate, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Update user profile"""
+    user = crud.update_user_profile(db, current_user.id, profile.dict(exclude_unset=True))
+    return user
+
+@router.put("/auth/password")
+def change_password(password_data: PasswordChange, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Change user password"""
+    if not verify_password(password_data.current_password, current_user.password):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    current_user.password = get_password_hash(password_data.new_password)
+    db.commit()
+    return {"message": "Password updated successfully"}
+
 # Movie Routes
 @router.get("/trending")
-def trending_movies(page: int = 1):
-    return tmdb_service.get_trending_movies(page)
+def trending_movies(page: int = 1, time_window: str = "week"):
+    return tmdb_service.get_trending_movies(page, time_window)
 
 @router.get("/search")
 def search_movie(q: str):

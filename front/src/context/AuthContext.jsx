@@ -8,31 +8,43 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
 
   useEffect(() => {
-    if (token) {
-      verifyToken();
+    const savedUser = localStorage.getItem('user');
+    const savedToken = localStorage.getItem('token');
+    
+    if (savedToken && savedUser) {
+      setUser(JSON.parse(savedUser));
+      setToken(savedToken);
+      setLoading(false);
+    } else if (savedToken) {
+      verifyToken(savedToken);
     } else {
       setLoading(false);
     }
   }, []);
 
-  const verifyToken = async () => {
+  const verifyToken = async (tokenToVerify) => {
     try {
       const response = await fetch('http://localhost:8000/auth/me', {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${tokenToVerify}`
         }
       });
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
       } else {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         setToken(null);
+        setUser(null);
       }
     } catch (error) {
       console.error('Token verification failed:', error);
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
       setToken(null);
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -116,6 +128,29 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateProfile = async (profileData) => {
+    try {
+      const response = await fetch('http://localhost:8000/auth/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(profileData)
+      });
+      if (response.ok) {
+        const updatedUser = await response.json();
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        return updatedUser;
+      }
+      throw new Error('Update failed');
+    } catch (error) {
+      console.error('Update profile error:', error);
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -125,6 +160,7 @@ export const AuthProvider = ({ children }) => {
       register,
       logout,
       updateLanguage,
+      updateProfile,
       isAuthenticated: !!user
     }}>
       {children}

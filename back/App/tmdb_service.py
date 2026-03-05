@@ -4,8 +4,8 @@ import os
 BASE_URL = "https://api.themoviedb.org/3"
 API_KEY = os.getenv("8265bd1679663a7ea12ac168da84d2e8")
 
-def get_trending_movies(page=1):
-    url = f"{BASE_URL}/trending/movie/week"
+def get_trending_movies(page=1, time_window="week"):
+    url = f"{BASE_URL}/trending/movie/{time_window}"
     return requests.get(url, params={
         "api_key": API_KEY,
         "page": page

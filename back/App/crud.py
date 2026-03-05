@@ -42,3 +42,14 @@ def update_user_language(db: Session, user_id: int, language: str):
         db.commit()
         db.refresh(user)
     return user
+
+def update_user_profile(db: Session, user_id: int, profile_data: dict):
+    """Update user profile"""
+    user = get_user_by_id(db, user_id)
+    if user:
+        for key, value in profile_data.items():
+            if value is not None and hasattr(user, key):
+                setattr(user, key, value)
+        db.commit()
+        db.refresh(user)
+    return user

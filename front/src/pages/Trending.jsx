@@ -5,16 +5,32 @@ import "./Trending.css";
 
 const Trending = () => {
   const [movies, setMovies] = useState([]);
+  const [timeWindow, setTimeWindow] = useState('week');
 
   useEffect(() => {
-    fetchTrending().then(data => setMovies(data.results || []));
-  }, []);
+    fetch(`http://localhost:8000/trending?time_window=${timeWindow}`)
+      .then(res => res.json())
+      .then(data => setMovies(data.results || []));
+  }, [timeWindow]);
 
   return (
     <div className="trending-container">
       <div className="movies-header">
-        <h2>Trending Now</h2>
-        <p>Discover the hottest movies and shows</p>
+        <h2>Trending Movies</h2>
+        <div className="time-selector">
+          <button 
+            className={timeWindow === 'day' ? 'active' : ''}
+            onClick={() => setTimeWindow('day')}
+          >
+            Today
+          </button>
+          <button 
+            className={timeWindow === 'week' ? 'active' : ''}
+            onClick={() => setTimeWindow('week')}
+          >
+            This Week
+          </button>
+        </div>
       </div>
       <div className="movie-grid">
         {movies.length > 0 ? (

@@ -18,6 +18,7 @@ class User(Base):
     username = Column(String(255), unique=True, index=True)
     email = Column(String(255), unique=True, index=True)
     password = Column(String(255))
+    profile_photo = Column(String(500), nullable=True)
     preferred_language = Column(String(10), default="en")
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)

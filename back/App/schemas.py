@@ -28,12 +28,22 @@ class UserOut(BaseModel):
     id: int
     username: str
     email: str
+    profile_photo: Optional[str] = None
     preferred_language: str
     is_active: bool
     created_at: datetime
 
     class Config:
         from_attributes = True
+
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    profile_photo: Optional[str] = None
+    preferred_language: Optional[str] = None
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
 
 class Token(BaseModel):
     access_token: str

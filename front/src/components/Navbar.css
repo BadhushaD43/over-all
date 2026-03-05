@@ -148,6 +148,14 @@
   gap: 0.5rem;
 }
 
+.profile-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+}
+
 .profile-btn:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
@@ -215,6 +223,27 @@
 
 .profile-actions {
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-link-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.profile-link-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
 .logout-btn {

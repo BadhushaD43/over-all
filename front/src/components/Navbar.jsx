@@ -66,7 +66,12 @@ const Navbar = () => {
                 className="profile-btn"
                 onClick={() => setShowProfile(!showProfile)}
               >
-                👤 {user?.username}
+                {user?.profile_photo ? (
+                  <img src={user.profile_photo} alt={user.username} className="profile-img" />
+                ) : (
+                  '👤'
+                )}
+                {user?.username}
               </button>
               
               {showProfile && (
@@ -77,6 +82,9 @@ const Navbar = () => {
                     <p className="language">Language: {user?.preferred_language?.toUpperCase()}</p>
                   </div>
                   <div className="profile-actions">
+                    <button onClick={() => { navigate('/profile'); setShowProfile(false); }} className="profile-link-btn">
+                      Profile & Settings
+                    </button>
                     <button onClick={handleLogout} className="logout-btn">
                       Logout
                     </button>
