@@ -7,6 +7,10 @@
   cursor: pointer;
 }
 
+.movie-link {
+  display: block;
+}
+
 .movie-card:hover {
   transform: scale(1.08);
   box-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
@@ -33,4 +37,25 @@
 .movie-info p {
   font-size: 12px;
   color: var(--text-secondary);
+}
+
+.watchlist-small-btn {
+  margin-top: 8px;
+  width: 100%;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .movie-card {
+    width: 160px;
+  }
+
+  .movie-card img {
+    height: 240px;
+  }
 }

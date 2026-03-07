@@ -12,9 +12,8 @@ class Settings:
     secret_key: str = os.getenv("SECRET_KEY", "dev-secret-key")
     tmdb_api_key: str = os.getenv("TMDB_API_KEY", "")
     cors_origins: str = os.getenv("CORS_ORIGINS", "http://localhost:5173")
-    default_admin_email: str = os.getenv("DEFAULT_ADMIN_EMAIL", "admin@ott.local")
+    default_admin_email: str = os.getenv("DEFAULT_ADMIN_EMAIL", "admin@ottstream.com")
     default_admin_password: str = os.getenv("DEFAULT_ADMIN_PASSWORD", "Admin@123")
 
 
 settings = Settings()
-

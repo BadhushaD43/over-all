@@ -66,3 +66,23 @@
   background: var(--accent);
   color: white;
 }
+
+@media (max-width: 900px) {
+  .movie-details {
+    flex-direction: column;
+    padding: 20px 14px;
+    gap: 20px;
+  }
+
+  .movie-poster img {
+    width: min(320px, 100%);
+  }
+
+  .movie-info-detail h1 {
+    font-size: 28px;
+  }
+
+  .action-buttons {
+    flex-wrap: wrap;
+  }
+}

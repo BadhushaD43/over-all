@@ -1,10 +1,10 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class UserProfileResponse(BaseModel):
     id: int
     name: str
-    email: EmailStr
+    email: str
     phone: str
     language: str
     region: str
@@ -33,4 +33,3 @@ class UserProfileUpdateRequest(BaseModel):
         if not cleaned.isdigit():
             raise ValueError("Phone must be numeric.")
         return value
-

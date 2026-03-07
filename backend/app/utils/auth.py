@@ -1,7 +1,7 @@
 from passlib.context import CryptContext
 from uuid import uuid4
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 _token_store: dict[str, int] = {}
 
 

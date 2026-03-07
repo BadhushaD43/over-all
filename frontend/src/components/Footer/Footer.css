@@ -22,3 +22,14 @@
   margin-top: 20px;
   font-size: 14px;
 }
+
+@media (max-width: 760px) {
+  .footer {
+    padding: 24px 14px;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 24px;
+  }
+}

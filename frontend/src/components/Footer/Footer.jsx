@@ -14,9 +14,10 @@ const Footer = () => {
           <p>Request Dub Movie</p>
         </div>
       </div>
-      <p className="footer-bottom">© 2024 MovieStream. All rights reserved.</p>
+      <p className="footer-bottom">Copyright 2026 MovieStream. All rights reserved.</p>
     </footer>
   );
 };
 
 export default Footer;
+

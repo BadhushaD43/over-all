@@ -25,3 +25,26 @@
   font-size: 24px;
   color: var(--text-secondary);
 }
+
+.home-message {
+  padding: 10px 40px;
+  color: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .hero-banner {
+    height: 380px;
+  }
+
+  .hero-banner h1 {
+    font-size: 32px;
+  }
+
+  .hero-banner p {
+    font-size: 18px;
+  }
+
+  .home-message {
+    padding: 10px 20px;
+  }
+}

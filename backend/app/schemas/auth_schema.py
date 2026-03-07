@@ -1,9 +1,9 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class SignUpRequest(BaseModel):
     name: str = Field(min_length=2, max_length=120)
-    email: EmailStr
+    email: str = Field(min_length=5, max_length=255)
     phone: str = Field(min_length=7, max_length=20)
     password: str = Field(min_length=6, max_length=100)
     confirm_password: str = Field(min_length=6, max_length=100)
@@ -26,16 +26,38 @@ class SignUpRequest(BaseModel):
             raise ValueError("Password and confirm password do not match.")
         return value
 
+    @field_validator("email")
+    @classmethod
+    def validate_email_format(cls, value: str) -> str:
+        email = value.strip().lower()
+        if not _is_valid_email_format(email):
+            raise ValueError("Invalid email format.")
+        return email
+
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    email: str = Field(min_length=5, max_length=255)
     password: str = Field(min_length=6, max_length=100)
+
+    @field_validator("email")
+    @classmethod
+    def validate_email_format(cls, value: str) -> str:
+        email = value.strip().lower()
+        if not _is_valid_email_format(email):
+            raise ValueError("Invalid email format.")
+        return email
 
 
 class AuthResponse(BaseModel):
     token: str
     user_id: int
     name: str
-    email: EmailStr
+    email: str
     is_admin: bool
 
+
+def _is_valid_email_format(value: str) -> bool:
+    if "@" not in value:
+        return False
+    local, _, domain = value.partition("@")
+    return bool(local and domain and "." in domain)

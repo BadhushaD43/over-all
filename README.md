@@ -26,7 +26,7 @@ Use `backend/.env`:
 DATABASE_URL=sqlite:///./ott.db
 SECRET_KEY=change-this-secret-key
 TMDB_API_KEY=your-tmdb-api-key
-DEFAULT_ADMIN_EMAIL=admin@ott.local
+DEFAULT_ADMIN_EMAIL=admin@ottstream.com
 DEFAULT_ADMIN_PASSWORD=Admin@123
 CORS_ORIGINS=http://localhost:5173
 ```
@@ -67,6 +67,5 @@ VITE_API_BASE=http://127.0.0.1:8000/api
 
 ## Admin Login
 Default admin is auto-created on backend startup:
-- Email: `admin@ott.local`
+- Email: `admin@ottstream.com`
 - Password: `Admin@123`
-

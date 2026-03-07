@@ -1,6 +1,6 @@
 .movie-row {
   margin: 40px 0;
-  padding: 0 40px;
+  padding: 0 24px;
 }
 
 .movie-row h2 {
@@ -28,4 +28,15 @@
 .movie-slider::-webkit-scrollbar-thumb {
   background: var(--accent);
   border-radius: 10px;
+}
+
+@media (max-width: 900px) {
+  .movie-row {
+    margin: 28px 0;
+    padding: 0 14px;
+  }
+
+  .movie-row h2 {
+    font-size: 20px;
+  }
 }
