@@ -1,0 +1,15 @@
+.watchlist-page {
+  padding: 40px;
+  min-height: 70vh;
+}
+
+.watchlist-page h1 {
+  margin-bottom: 30px;
+  font-size: 32px;
+}
+
+.watchlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}

@@ -1,0 +1,12 @@
+.search-box {
+  width: 300px;
+  padding: 10px;
+  border-radius: 25px;
+  border: none;
+  background: var(--bg-secondary);
+  color: white;
+}
+
+.search-box:focus {
+  outline: 2px solid var(--accent);
+}

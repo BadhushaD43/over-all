@@ -1,0 +1,68 @@
+.movie-details {
+  display: flex;
+  gap: 40px;
+  padding: 40px;
+  min-height: 70vh;
+}
+
+.movie-poster img {
+  width: 300px;
+  border-radius: 10px;
+}
+
+.movie-info-detail {
+  flex: 1;
+}
+
+.movie-info-detail h1 {
+  font-size: 36px;
+  margin-bottom: 15px;
+}
+
+.rating {
+  font-size: 20px;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.overview {
+  line-height: 1.6;
+  margin-bottom: 30px;
+  color: var(--text-secondary);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.watch-btn {
+  background: var(--accent);
+  padding: 10px 25px;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.watch-btn:hover {
+  opacity: 0.8;
+}
+
+.watchlist-btn {
+  background: transparent;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  padding: 10px 25px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.watchlist-btn:hover {
+  background: var(--accent);
+  color: white;
+}

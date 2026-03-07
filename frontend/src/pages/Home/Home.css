@@ -1,0 +1,27 @@
+.home {
+  min-height: 100vh;
+}
+
+.hero-banner {
+  height: 500px;
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+              url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1920');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.hero-banner h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.hero-banner p {
+  font-size: 24px;
+  color: var(--text-secondary);
+}
