@@ -1,13 +1,20 @@
 .sidebar {
   width: 280px;
-  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   padding: 2rem 1rem;
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
   overflow-y: auto;
+  z-index: 1200;
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+}
+
+.sidebar.open {
+  transform: translateX(0);
 }
 
 .sidebar h2 {
@@ -23,8 +30,8 @@
 
 .sidebar-nav button {
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
+  background: var(--bg-card);
+  color: var(--text-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -34,11 +41,11 @@
 }
 
 .sidebar-nav button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--accent-secondary);
 }
 
 .logout-btn {
-  background: #e50914 !important;
+  background: var(--accent-primary) !important;
   margin-top: 1rem;
 }
 
@@ -46,15 +53,6 @@
   .sidebar {
     width: 280px;
     height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 1200;
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
-  }
-
-  .sidebar.open {
-    transform: translateX(0);
+    padding-top: 4rem;
   }
 }

@@ -3,8 +3,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -38,24 +38,24 @@
 .navbar-links button {
   padding: 0.6rem 1.2rem;
   border: none;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  background: var(--bg-card);
+  color: var(--text-primary);
   border-radius: 20px;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .navbar-links button:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--accent-secondary);
 }
 
 .navbar-links button.active {
-  background: rgba(255, 255, 255, 0.35);
+  background: var(--accent-primary);
   font-weight: 600;
 }
 
 .login-btn {
-  background: #e50914 !important;
+  background: var(--accent-primary) !important;
 }
 
 @media (max-width: 768px) {

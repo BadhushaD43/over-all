@@ -52,6 +52,11 @@ export const updateProfile = (data) => request('/users/me', {
   body: JSON.stringify(data)
 });
 
+export const updatePassword = (currentPassword, newPassword) => request('/users/me/password', {
+  method: 'PUT',
+  body: JSON.stringify({ current_password: currentPassword, new_password: newPassword })
+});
+
 export const getWatchlist = () => request('/watchlist');
 
 export const addWatchlist = (movie) => request('/watchlist', {
@@ -72,6 +77,13 @@ export const getSupportMessages = () => request('/admin/support');
 
 export const searchMovies = (query, language = 'English', page = 1) =>
   request(`/movies/search?query=${encodeURIComponent(query)}&language=${encodeURIComponent(language)}&page=${page}`)
+    .then((res) => res.results || []);
+
+export const getMovieDetails = (movieId, language = 'English') =>
+  request(`/movies/${movieId}?language=${encodeURIComponent(language)}`);
+
+export const getMovieVideos = (movieId, language = 'English') =>
+  request(`/movies/${movieId}/videos?language=${encodeURIComponent(language)}`)
     .then((res) => res.results || []);
 
 export const LANGUAGES = ['English', 'Spanish', 'French', 'German', 'Japanese', 'Chinese', 'Tamil'];

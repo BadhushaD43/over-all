@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDarkMode } from '../../context/DarkModeContext';
+import { updatePassword, updateProfile } from '../../services/api';
 import './UserProfile.css';
-import { updateProfile } from '../../services/api';
 
-const UserProfile = ({ profile, onUpdate }) => {
+const UserProfile = ({ profile, onUpdate = () => {} }) => {
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState(profile || {});
   const [changingPassword, setChangingPassword] = useState(false);
-  const [passwords, setPasswords] = useState({ new: '', confirm: '' });
+  const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
   const { darkMode, setDarkMode } = useDarkMode();
+
+  useEffect(() => {
+    setFormData(profile || {});
+  }, [profile]);
 
   const handleSave = async () => {
     try {
@@ -21,20 +25,24 @@ const UserProfile = ({ profile, onUpdate }) => {
     }
   };
 
-  const handlePasswordChange = () => {
-    if (passwords.new === passwords.confirm && passwords.new.length >= 6) {
+  const handlePasswordChange = async () => {
+    if (passwords.new !== passwords.confirm || passwords.new.length < 6) {
+      alert('Passwords do not match or too short');
+      return;
+    }
+    try {
+      await updatePassword(passwords.current, passwords.new);
       alert('Password changed successfully');
       setChangingPassword(false);
-      setPasswords({ new: '', confirm: '' });
-    } else {
-      alert('Passwords do not match or too short');
+      setPasswords({ current: '', new: '', confirm: '' });
+    } catch (err) {
+      alert(err?.message || 'Failed to change password');
     }
   };
 
   return (
     <div className="user-profile">
-      <div className="profile-icon">👤</div>
-      
+      <div className="profile-icon">User</div>
       {!editing ? (
         <>
           <h3>{profile?.name}</h3>
@@ -64,6 +72,8 @@ const UserProfile = ({ profile, onUpdate }) => {
             <option>French</option>
             <option>German</option>
             <option>Japanese</option>
+            <option>Chinese</option>
+            <option>Tamil</option>
           </select>
           <select
             value={formData.region || ''}
@@ -73,6 +83,7 @@ const UserProfile = ({ profile, onUpdate }) => {
             <option>UK</option>
             <option>India</option>
             <option>Japan</option>
+            <option>China</option>
           </select>
           <button onClick={handleSave}>Save</button>
           <button onClick={() => setEditing(false)}>Cancel</button>
@@ -85,6 +96,12 @@ const UserProfile = ({ profile, onUpdate }) => {
 
       {changingPassword && (
         <div className="password-change">
+          <input
+            type="password"
+            placeholder="Current Password"
+            value={passwords.current}
+            onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+          />
           <input
             type="password"
             placeholder="New Password"
@@ -106,7 +123,7 @@ const UserProfile = ({ profile, onUpdate }) => {
           <input
             type="checkbox"
             checked={darkMode}
-            onChange={() => setDarkMode(!darkMode)}
+            onChange={(e) => setDarkMode(e.target.checked)}
           />
           Dark Mode
         </label>

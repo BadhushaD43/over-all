@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from app.services.tmdb_service import (
     get_best_movies_by_language,
     get_movie_details,
+    get_movie_videos,
     get_new_release_movies,
     get_today_collection_movies,
     get_recommended_by_region,
@@ -112,3 +113,8 @@ def movie_details(movie_id: int, language: str = Query(default="English")):
     if not details.get("id"):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Movie not found.")
     return details
+
+
+@router.get("/{movie_id}/videos")
+def movie_videos(movie_id: int, language: str = Query(default="English")):
+    return {"results": get_movie_videos(movie_id=movie_id, language=resolve_language_code(language))}

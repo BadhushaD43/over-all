@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import MovieCard from '../MovieCard/MovieCard';
 import './MovieSlider.css';
 
-const MovieSlider = ({ title, movies }) => {
+const MovieSlider = ({ title, movies, onMovieClick }) => {
   const sliderRef = useRef(null);
 
   const scroll = (direction) => {
@@ -20,7 +20,7 @@ const MovieSlider = ({ title, movies }) => {
         <button className="slider-btn left" onClick={() => scroll('left')}>‹</button>
         <div className="slider-content" ref={sliderRef}>
           {movies.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
+            <MovieCard key={movie.id} movie={movie} onViewDetails={onMovieClick} />
           ))}
         </div>
         <button className="slider-btn right" onClick={() => scroll('right')}>›</button>

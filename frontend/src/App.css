@@ -4,31 +4,41 @@
   box-sizing: border-box;
 }
 
+:root {
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --bg-card: #242424;
+  --accent-primary: #14b8a6;
+  --accent-secondary: #2f80ed;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #0a0a0a;
-  color: white;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   transition: background 0.3s, color 0.3s;
 }
 
 body.dark-mode {
-  background: #000;
-  color: #fff;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 body.dark-mode .login-box,
 body.dark-mode .admin-main,
 body.dark-mode .messages-section {
-  background: #1a1a1a;
-  color: white;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 body.dark-mode input,
 body.dark-mode textarea,
 body.dark-mode select {
-  background: #2a2a2a;
-  color: white;
-  border-color: #444;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
 }
 
 ::-webkit-scrollbar {
@@ -37,14 +47,14 @@ body.dark-mode select {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #667eea;
+  background: var(--accent-secondary);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #5568d3;
+  background: var(--accent-primary);
 }

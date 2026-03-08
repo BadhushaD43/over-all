@@ -22,6 +22,11 @@ LANGUAGE_NAME_TO_CODE = {
 REGION_NAME_TO_CODE = {
     "india": "IN",
     "usa": "US",
+    "us": "US",
+    "uk": "GB",
+    "united kingdom": "GB",
+    "britain": "GB",
+    "england": "GB",
     "europe": "FR",
     "japan": "JP",
     "china": "CN",
@@ -69,6 +74,7 @@ def _movie_card(movie: dict[str, Any]) -> dict[str, Any]:
         "backdrop_path": movie.get("backdrop_path"),
         "release_date": movie.get("release_date") or movie.get("first_air_date"),
         "rating": movie.get("vote_average"),
+        "original_language": movie.get("original_language"),
         "genre_ids": movie.get("genre_ids", []),
     }
 
@@ -86,6 +92,7 @@ def _fallback_movies(language_code: str, category: str = "Trending") -> list[dic
                 "backdrop_path": None,
                 "release_date": f"2026-0{(idx % 9) + 1}-01",
                 "rating": 7.0 + (idx % 3) * 0.3,
+                "original_language": language_code.split("-")[0].lower(),
                 "genre_ids": [18, 28],
             }
         )
@@ -110,13 +117,39 @@ def resolve_original_language_code(language: str) -> str:
 
 
 def get_trending_movies(language: str = "en-US", page: int = 1) -> list[dict[str, Any]]:
-    data = _request("/trending/movie/week", {"language": language, "page": page})
+    today = date.today().isoformat()
+    original_language = language.split("-")[0].lower()
+    data = _request(
+        "/discover/movie",
+        {
+            "language": language,
+            "with_original_language": original_language,
+            "sort_by": "popularity.desc",
+            "vote_count.gte": 100,
+            "include_adult": False,
+            "primary_release_date.lte": today,
+            "page": page,
+        },
+    )
     results = [_movie_card(item) for item in data.get("results", [])]
     return results or _fallback_movies(language, "Trending")
 
 
 def get_upcoming_movies(language: str = "en-US", region: str = "US", page: int = 1) -> list[dict[str, Any]]:
-    data = _request("/movie/upcoming", {"language": language, "region": region, "page": page})
+    today = date.today().isoformat()
+    original_language = language.split("-")[0].lower()
+    data = _request(
+        "/discover/movie",
+        {
+            "language": language,
+            "with_original_language": original_language,
+            "region": region,
+            "sort_by": "popularity.desc",
+            "include_adult": False,
+            "primary_release_date.gte": today,
+            "page": page,
+        },
+    )
     results = [_movie_card(item) for item in data.get("results", [])]
     return results or _fallback_movies(language, "Upcoming")
 
@@ -187,6 +220,7 @@ def get_movie_details(movie_id: int, language: str = "en-US") -> dict[str, Any]:
             "backdrop_path": item["backdrop_path"],
             "release_date": item["release_date"],
             "rating": item["rating"],
+            "original_language": item.get("original_language"),
             "runtime": 120,
             "genres": ["Drama", "Action"],
         }
@@ -198,9 +232,26 @@ def get_movie_details(movie_id: int, language: str = "en-US") -> dict[str, Any]:
         "backdrop_path": movie.get("backdrop_path"),
         "release_date": movie.get("release_date"),
         "rating": movie.get("vote_average"),
+        "original_language": movie.get("original_language"),
         "runtime": movie.get("runtime"),
         "genres": [genre.get("name") for genre in movie.get("genres", [])],
     }
+
+
+def get_movie_videos(movie_id: int, language: str = "en-US") -> list[dict[str, Any]]:
+    data = _request(f"/movie/{movie_id}/videos", {"language": language})
+    videos = data.get("results", [])
+    return [
+        {
+            "id": item.get("id"),
+            "key": item.get("key"),
+            "site": item.get("site"),
+            "type": item.get("type"),
+            "name": item.get("name"),
+        }
+        for item in videos
+        if item.get("key")
+    ]
 
 
 def get_recommended_by_region(language: str, region: str, page: int = 1) -> list[dict[str, Any]]:

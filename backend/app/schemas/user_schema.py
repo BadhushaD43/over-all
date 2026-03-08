@@ -33,3 +33,8 @@ class UserProfileUpdateRequest(BaseModel):
         if not cleaned.isdigit():
             raise ValueError("Phone must be numeric.")
         return value
+
+
+class UserPasswordUpdateRequest(BaseModel):
+    current_password: str = Field(min_length=6, max_length=128)
+    new_password: str = Field(min_length=6, max_length=128)

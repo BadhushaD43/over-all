@@ -1,16 +1,16 @@
 .home {
   min-height: 100vh;
-  background: #0a0a0a;
+  background: var(--bg-primary);
 }
 
 .loading {
   text-align: center;
-  color: white;
+  color: var(--text-primary);
   padding: 3rem;
   font-size: 1.5rem;
 }
 
 .home-section-title {
   margin: 0 2rem 1rem;
-  color: #fff;
+  color: var(--text-primary);
 }
