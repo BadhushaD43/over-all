@@ -1,14 +1,29 @@
+import { useRef } from 'react';
 import MovieCard from '../MovieCard/MovieCard';
 import './MovieSlider.css';
 
-const MovieSlider = ({ title, movies, language, onAddWatchlist }) => {
+const MovieSlider = ({ title, movies }) => {
+  const sliderRef = useRef(null);
+
+  const scroll = (direction) => {
+    const { current } = sliderRef;
+    if (current) {
+      const scrollAmount = direction === 'left' ? -800 : 800;
+      current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="movie-row">
+    <div className="movie-slider">
       <h2>{title}</h2>
-      <div className="movie-slider">
-        {movies?.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} language={language} onAddWatchlist={onAddWatchlist} />
-        ))}
+      <div className="slider-container">
+        <button className="slider-btn left" onClick={() => scroll('left')}>‹</button>
+        <div className="slider-content" ref={sliderRef}>
+          {movies.map((movie) => (
+            <MovieCard key={movie.id} movie={movie} />
+          ))}
+        </div>
+        <button className="slider-btn right" onClick={() => scroll('right')}>›</button>
       </div>
     </div>
   );

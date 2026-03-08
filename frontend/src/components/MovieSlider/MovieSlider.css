@@ -1,42 +1,46 @@
-.movie-row {
-  margin: 40px 0;
-  padding: 0 24px;
-}
-
-.movie-row h2 {
-  margin-bottom: 15px;
-  font-size: 24px;
-}
-
 .movie-slider {
+  padding: 2rem;
+  color: white;
+}
+
+.movie-slider h2 {
+  margin-bottom: 1rem;
+}
+
+.slider-container {
+  position: relative;
+}
+
+.slider-content {
   display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  padding: 10px 0;
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent) var(--bg-secondary);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  gap: 10px;
 }
 
-.movie-slider::-webkit-scrollbar {
-  height: 8px;
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  font-size: 3rem;
+  padding: 0 15px;
+  cursor: pointer;
+  z-index: 10;
+  height: 100%;
+  transition: 0.3s;
 }
 
-.movie-slider::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+.slider-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
 }
 
-.movie-slider::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 10px;
+.slider-btn.left {
+  left: 0;
 }
 
-@media (max-width: 900px) {
-  .movie-row {
-    margin: 28px 0;
-    padding: 0 14px;
-  }
-
-  .movie-row h2 {
-    font-size: 20px;
-  }
+.slider-btn.right {
+  right: 0;
 }

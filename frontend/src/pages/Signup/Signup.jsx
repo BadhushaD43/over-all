@@ -1,96 +1,124 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { setAuthToken, signup } from '../../services/api';
+import { useNavigate } from 'react-router-dom';
+import { LANGUAGES, signup } from '../../services/api';
 import './Signup.css';
 
+const REGIONS = ['USA', 'India', 'UK', 'Canada', 'Australia', 'Germany', 'Japan'];
+
 const Signup = () => {
-  const [form, setForm] = useState({
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     password: '',
     confirm_password: '',
-    language: 'English',
     region: 'USA',
+    language: 'English'
   });
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (form.password !== form.confirm_password) {
-      setError('Password and confirm password do not match.');
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (formData.password !== formData.confirm_password) {
+      setError('Password and confirm password must match.');
       return;
     }
+
     try {
-      const response = await signup(form);
-      setAuthToken(response.token);
-      navigate('/');
+      setLoading(true);
+      const data = await signup(formData);
+      localStorage.setItem('token', data.token || data.access_token);
+      navigate('/dashboard');
     } catch (err) {
-      setError(err.message || 'Signup failed.');
+      setError(err.message || 'Signup failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <h1>Sign Up</h1>
-        {error && <p className="auth-error">{error}</p>}
+    <div className="signup-page">
+      <div className="signup-box">
+        <h2>Create Your Account</h2>
+        <p className="signup-subtitle">Join MovieStream to get personalized recommendations.</p>
+
+        {error && <p className="error">{error}</p>}
+
         <form onSubmit={handleSubmit}>
           <input
             type="text"
-            placeholder="Full Name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            name="name"
+            placeholder="User Name"
+            value={formData.name}
+            onChange={onChange}
+            minLength={2}
             required
           />
           <input
             type="email"
+            name="email"
             placeholder="Email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            value={formData.email}
+            onChange={onChange}
             required
           />
           <input
-            type="text"
-            placeholder="Mobile Number"
-            value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            type="tel"
+            name="phone"
+            placeholder="Phone"
+            value={formData.phone}
+            onChange={onChange}
             required
           />
           <input
             type="password"
+            name="password"
+            placeholder="Create Password"
+            value={formData.password}
+            onChange={onChange}
+            minLength={6}
+            required
+          />
+          <input
+            type="password"
+            name="confirm_password"
             placeholder="Confirm Password"
-            value={form.confirm_password}
-            onChange={(e) => setForm({ ...form, confirm_password: e.target.value })}
+            value={formData.confirm_password}
+            onChange={onChange}
+            minLength={6}
             required
           />
-          <select value={form.language} onChange={(e) => setForm({ ...form, language: e.target.value })}>
-            <option>English</option>
-            <option>Spanish</option>
-            <option>French</option>
-            <option>German</option>
-            <option>Japanese</option>
-            <option>Chinese</option>
-            <option>Tamil</option>
-          </select>
-          <select value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })}>
-            <option>India</option>
-            <option>USA</option>
-            <option>Europe</option>
-            <option>Japan</option>
-            <option>China</option>
-          </select>
-          <button type="submit" className="auth-btn">Sign Up</button>
+
+          <div className="signup-row">
+            <select name="region" value={formData.region} onChange={onChange} required>
+              {REGIONS.map((region) => (
+                <option key={region} value={region}>{region}</option>
+              ))}
+            </select>
+            <select name="language" value={formData.language} onChange={onChange} required>
+              {LANGUAGES.map((language) => (
+                <option key={language} value={language}>{language}</option>
+              ))}
+            </select>
+          </div>
+
+          <button type="submit" disabled={loading}>
+            {loading ? 'Creating...' : 'Sign Up'}
+          </button>
         </form>
-        <p>Already have an account? <Link to="/login">Login</Link></p>
+
+        <p className="signin-link">
+          Already have an account? <span onClick={() => navigate('/login')}>Login</span>
+        </p>
       </div>
     </div>
   );

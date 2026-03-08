@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import create_engine, text
+from sqlalchemy.engine.url import make_url
 
 from app.config.settings import settings
 from app.database.session import Base, SessionLocal, engine
@@ -35,8 +37,28 @@ def health_check():
     return {"status": "ok"}
 
 
+def ensure_database_exists():
+    url = make_url(settings.database_url)
+    if not url.drivername.startswith("mysql") or not url.database:
+        return
+
+    admin_engine = create_engine(url.set(database=""))
+    db_name = url.database.replace("`", "``")
+    try:
+        with admin_engine.begin() as conn:
+            conn.execute(
+                text(
+                    f"CREATE DATABASE IF NOT EXISTS `{db_name}` "
+                    "CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+                )
+            )
+    finally:
+        admin_engine.dispose()
+
+
 @app.on_event("startup")
 def startup_event():
+    ensure_database_exists()
     Base.metadata.create_all(bind=engine)
 
     db = SessionLocal()
@@ -57,4 +79,3 @@ def startup_event():
             db.commit()
     finally:
         db.close()
-

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { login, setAuthToken } from '../../services/api';
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
+import { login } from '../../services/api';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -9,29 +9,35 @@ const Login = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await login({ email, password });
-      setAuthToken(response.token);
-      if (response.is_admin) {
+      const data = await login(email, password);
+      localStorage.setItem('token', data.token || data.access_token);
+
+      if (data.is_admin) {
         navigate('/admin');
       } else {
         navigate('/dashboard');
       }
     } catch (err) {
-      setError(err.message || 'Login failed.');
+      setError(err.message || 'Invalid email or password');
     }
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <h1>Login</h1>
-        {error && <p className="auth-error">{error}</p>}
+    <div className="login-page">
+      <div className="login-box">
+        <h2>Login to MovieStream</h2>
+        {error && <p className="error">{error}</p>}
         <form onSubmit={handleSubmit}>
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
           <input
             type="password"
             placeholder="Password"
@@ -39,9 +45,12 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit" className="auth-btn">Login</button>
+          <button type="submit">Login</button>
         </form>
-        <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
+        <p className="signup-link">
+          New user? <span onClick={() => navigate('/signup')}>Create an account</span>
+        </p>
+        <p className="back-link" onClick={() => navigate('/')}>Back to Home</p>
       </div>
     </div>
   );

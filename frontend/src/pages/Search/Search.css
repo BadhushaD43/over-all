@@ -1,0 +1,29 @@
+.search-page {
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #fff;
+}
+
+.search-content {
+  padding: 2rem;
+}
+
+.search-content h1 {
+  margin-bottom: 1rem;
+}
+
+.search-status {
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+.search-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.search-grid .movie-card {
+  min-width: 0;
+  margin: 0;
+}

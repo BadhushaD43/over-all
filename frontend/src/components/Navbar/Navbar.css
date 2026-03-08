@@ -1,169 +1,70 @@
 .navbar {
-  background: rgba(15, 15, 15, 0.75);
-  backdrop-filter: blur(10px);
-  padding: 15px 24px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
-.menu-btn {
-  width: 40px;
-  height: 36px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
   cursor: pointer;
 }
 
-.menu-btn span {
-  display: block;
-  width: 18px;
-  height: 2px;
-  margin: 0 auto;
-  background: var(--text-main);
+.navbar-search {
+  flex: 1;
+  max-width: 500px;
+  margin: 0 2rem;
 }
 
-.navbar-left {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
-
-.logo {
-  font-size: 24px;
-  color: var(--accent);
-}
-
-.navbar a {
-  color: var(--text-main);
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.navbar a:hover {
-  color: var(--accent);
-}
-
-.navbar-right {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-
-.search-box {
-  width: 220px;
-  padding: 10px;
+.navbar-search input {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border: none;
   border-radius: 25px;
-  border: none;
-  background: var(--bg-secondary);
-  color: white;
+  outline: none;
 }
 
-.login-btn,
-.signup-btn {
-  background: var(--accent);
-  color: white;
+.navbar-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-links button {
+  padding: 0.6rem 1.2rem;
   border: none;
-  padding: 8px 18px;
-  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 20px;
   cursor: pointer;
   transition: 0.3s;
 }
 
-.login-btn:hover,
-.signup-btn:hover {
-  opacity: 0.8;
+.navbar-links button:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
-.drawer-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.28);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s;
-  z-index: 110;
+.navbar-links button.active {
+  background: rgba(255, 255, 255, 0.35);
+  font-weight: 600;
 }
 
-.drawer-overlay.open {
-  opacity: 1;
-  pointer-events: auto;
+.login-btn {
+  background: #e50914 !important;
 }
 
-.left-drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: min(280px, 85vw);
-  height: 100vh;
-  padding: 20px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  background: rgba(20, 20, 20, 0.45);
-  border-right: 1px solid rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(14px);
-  transform: translateX(-100%);
-  transition: transform 0.28s ease;
-  z-index: 120;
-}
-
-.left-drawer.open {
-  transform: translateX(0);
-}
-
-.left-drawer a,
-.drawer-logout {
-  color: var(--text-main);
-  text-decoration: none;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 10px 12px;
-  border-radius: 10px;
-}
-
-.drawer-logout {
-  text-align: left;
-  cursor: pointer;
-}
-
-.drawer-close {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--text-main);
-  background: rgba(255, 255, 255, 0.08);
-  cursor: pointer;
-}
-
-@media (max-width: 920px) {
-  .navbar-left a {
-    display: none;
-  }
-}
-
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .navbar {
-    padding: 12px;
+    flex-wrap: wrap;
   }
-
-  .navbar-right {
+  .navbar-search {
+    order: 3;
     width: 100%;
-  }
-
-  .search-box {
-    width: 100%;
+    margin: 1rem 0 0 0;
   }
 }
-

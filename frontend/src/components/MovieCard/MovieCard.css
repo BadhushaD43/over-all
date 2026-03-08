@@ -1,61 +1,92 @@
 .movie-card {
-  width: 200px;
-  background: var(--card-bg);
+  min-width: 200px;
+  margin: 0 10px;
+  cursor: pointer;
+  height: 380px;
+  perspective: 1200px;
+  border-radius: 10px;
+}
+
+.movie-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.movie-card:hover .movie-card-inner {
+  transform: rotateY(180deg);
+}
+
+.movie-card-face {
+  position: absolute;
+  inset: 0;
   border-radius: 10px;
   overflow: hidden;
-  transition: 0.3s;
-  cursor: pointer;
+  backface-visibility: hidden;
+  background: #1a1a1a;
+  color: #fff;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.35);
 }
 
-.movie-link {
-  display: block;
-}
-
-.movie-card:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
-}
-
-.movie-card img {
+.movie-card-front img {
   width: 100%;
   height: 300px;
   object-fit: cover;
 }
 
-.movie-info {
-  padding: 10px;
+.movie-card-back {
+  transform: rotateY(180deg);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: flex-start;
+  background: linear-gradient(180deg, #182339 0%, #0f1625 100%);
 }
 
-.movie-info h3 {
+.movie-card-info {
+  padding: 10px;
+  color: white;
+}
+
+.movie-card-info h3 {
   font-size: 14px;
-  margin-bottom: 5px;
+  margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.movie-info p {
+.movie-card-info p {
+  margin: 5px 0 0 0;
   font-size: 12px;
-  color: var(--text-secondary);
+  color: #ffd700;
 }
 
-.watchlist-small-btn {
+.movie-card-back p {
+  margin: 0;
+  font-size: 12px;
+  color: #d7e6ff;
+}
+
+.movie-card-back h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.movie-overview {
+  margin-top: 2px;
+  line-height: 1.45;
+  color: #ffffff;
+  max-height: 110px;
+  overflow: hidden;
+}
+
+.watchlist-hint {
+  display: inline-block;
   margin-top: 8px;
-  width: 100%;
-  background: var(--accent);
-  border: none;
-  border-radius: 6px;
-  color: white;
-  padding: 8px 10px;
-  cursor: pointer;
-}
-
-@media (max-width: 900px) {
-  .movie-card {
-    width: 160px;
-  }
-
-  .movie-card img {
-    height: 240px;
-  }
+  font-size: 11px;
+  color: #9ed2ff;
 }

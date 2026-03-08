@@ -1,1 +1,107 @@
-@import '../Login/Login.css';
+.signup-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #0d1a3a 0%, #1f3f87 55%, #2b6cb0 100%);
+}
+
+.signup-box {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  color: #1a1a1a;
+  border-radius: 14px;
+  padding: 30px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+}
+
+.signup-box h2 {
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.signup-subtitle {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #666;
+}
+
+.error {
+  margin-bottom: 12px;
+  border-radius: 6px;
+  padding: 10px;
+  background: #ffe5e5;
+  color: #b42318;
+  text-align: center;
+}
+
+.signup-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.signup-box input,
+.signup-box select {
+  width: 100%;
+  border: 1px solid #d7d7d7;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 15px;
+}
+
+.signup-box input:focus,
+.signup-box select:focus {
+  outline: 2px solid #2b6cb0;
+  border-color: #2b6cb0;
+}
+
+.signup-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.signup-box button {
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #2b6cb0;
+  color: #fff;
+}
+
+.signup-box button:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.signin-link {
+  margin-top: 14px;
+  text-align: center;
+  color: #444;
+}
+
+.signin-link span {
+  color: #2b6cb0;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.signin-link span:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .signup-box {
+    padding: 20px;
+  }
+
+  .signup-row {
+    grid-template-columns: 1fr;
+  }
+}

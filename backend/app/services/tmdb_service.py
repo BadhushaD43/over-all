@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date
 from typing import Any
 
 import requests
@@ -24,6 +25,16 @@ REGION_NAME_TO_CODE = {
     "europe": "FR",
     "japan": "JP",
     "china": "CN",
+}
+
+ORIGINAL_LANGUAGE_NAME_TO_CODE = {
+    "english": "en",
+    "spanish": "es",
+    "french": "fr",
+    "german": "de",
+    "japanese": "ja",
+    "chinese": "zh",
+    "tamil": "ta",
 }
 
 FALLBACK_POSTERS = [
@@ -91,6 +102,13 @@ def resolve_region_code(region: str) -> str:
     return REGION_NAME_TO_CODE.get(value, "US")
 
 
+def resolve_original_language_code(language: str) -> str:
+    value = (language or "english").strip().lower()
+    if value in ORIGINAL_LANGUAGE_NAME_TO_CODE:
+        return ORIGINAL_LANGUAGE_NAME_TO_CODE[value]
+    return resolve_language_code(language).split("-")[0].lower()
+
+
 def get_trending_movies(language: str = "en-US", page: int = 1) -> list[dict[str, Any]]:
     data = _request("/trending/movie/week", {"language": language, "page": page})
     results = [_movie_card(item) for item in data.get("results", [])]
@@ -101,6 +119,51 @@ def get_upcoming_movies(language: str = "en-US", region: str = "US", page: int =
     data = _request("/movie/upcoming", {"language": language, "region": region, "page": page})
     results = [_movie_card(item) for item in data.get("results", [])]
     return results or _fallback_movies(language, "Upcoming")
+
+
+def get_best_movies_by_language(language: str = "english", page: int = 1) -> list[dict[str, Any]]:
+    original_language = resolve_original_language_code(language)
+    ui_language = resolve_language_code(language)
+    today = date.today().isoformat()
+    data = _request(
+        "/discover/movie",
+        {
+            "language": ui_language,
+            "with_original_language": original_language,
+            "sort_by": "popularity.desc",
+            "vote_count.gte": 100,
+            "include_adult": False,
+            "primary_release_date.lte": today,
+            "page": page,
+        },
+    )
+    results = [_movie_card(item) for item in data.get("results", [])]
+    return results or _fallback_movies(ui_language, f"{original_language.upper()} Best")
+
+
+def get_new_release_movies(language: str = "en-US", region: str = "US", page: int = 1) -> list[dict[str, Any]]:
+    data = _request("/movie/now_playing", {"language": language, "region": region, "page": page})
+    results = [_movie_card(item) for item in data.get("results", [])]
+    return results or _fallback_movies(language, "New Release")
+
+
+def get_today_collection_movies(language: str = "en-US", region: str = "US", page: int = 1) -> list[dict[str, Any]]:
+    today = date.today().isoformat()
+    data = _request(
+        "/discover/movie",
+        {
+            "language": language,
+            "region": region,
+            "include_adult": False,
+            "sort_by": "popularity.desc",
+            "vote_count.gte": 30,
+            "primary_release_date.gte": today,
+            "primary_release_date.lte": today,
+            "page": page,
+        },
+    )
+    results = [_movie_card(item) for item in data.get("results", [])]
+    return results or get_new_release_movies(language=language, region=region, page=page)
 
 
 def search_movies(query: str, language: str = "en-US", page: int = 1) -> list[dict[str, Any]]:

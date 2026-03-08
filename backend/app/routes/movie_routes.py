@@ -1,7 +1,11 @@
 from fastapi import APIRouter, HTTPException, Query, status
+from datetime import datetime, timezone
 
 from app.services.tmdb_service import (
+    get_best_movies_by_language,
     get_movie_details,
+    get_new_release_movies,
+    get_today_collection_movies,
     get_recommended_by_region,
     get_trending_movies,
     get_upcoming_movies,
@@ -25,7 +29,7 @@ def list_trending_movies_by_language(
     names = [value.strip() for value in languages.split(",") if value.strip()]
     response: dict[str, list[dict]] = {}
     for name in names:
-        response[name] = get_trending_movies(language=resolve_language_code(name), page=1)[:10]
+        response[name] = get_best_movies_by_language(language=name, page=1)[:10]
     return response
 
 
@@ -41,6 +45,40 @@ def list_upcoming_movies(
             region=resolve_region_code(region),
             page=page,
         )
+    }
+
+
+@router.get("/new-releases")
+def list_new_releases(
+    language: str = Query(default="English"),
+    region: str = Query(default="USA"),
+    page: int = Query(default=1, ge=1),
+):
+    return {
+        "results": get_new_release_movies(
+            language=resolve_language_code(language),
+            region=resolve_region_code(region),
+            page=page,
+        )
+    }
+
+
+@router.get("/today-collection")
+def list_today_collection(
+    language: str = Query(default="English"),
+    region: str = Query(default="USA"),
+    page: int = Query(default=1, ge=1),
+):
+    today = datetime.now(timezone.utc).date().isoformat()
+    return {
+        "source": "TMDB",
+        "today_date": today,
+        "fetched_at": datetime.now(timezone.utc).isoformat(),
+        "results": get_today_collection_movies(
+            language=resolve_language_code(language),
+            region=resolve_region_code(region),
+            page=page,
+        ),
     }
 
 
@@ -74,4 +112,3 @@ def movie_details(movie_id: int, language: str = Query(default="English")):
     if not details.get("id"):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Movie not found.")
     return details
-

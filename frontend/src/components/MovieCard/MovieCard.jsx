@@ -1,29 +1,54 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { addWatchlist } from '../../services/api';
 import './MovieCard.css';
 
-const MovieCard = ({ movie, language = 'English', onAddWatchlist }) => {
+const MovieCard = ({ movie }) => {
+  const [isSaving, setIsSaving] = useState(false);
+
   const posterPath = movie?.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : 'https://placehold.co/300x450?text=No+Poster';
-  const rating = movie.vote_average || movie.rating || 'N/A';
-  const year = movie.release_date ? movie.release_date.split('-')[0] : 'TBA';
+  const rating = Number(movie?.vote_average || 0).toFixed(1);
+  const releaseDate = movie?.release_date || 'Unknown';
+  const language = movie?.original_language?.toUpperCase() || 'N/A';
+  const overview = movie?.overview
+    ? movie.overview.slice(0, 180) + (movie.overview.length > 180 ? '...' : '')
+    : 'No description available.';
+
+  const handleAddWatchlist = async () => {
+    if (!movie?.id || isSaving) return;
+    try {
+      setIsSaving(true);
+      await addWatchlist(movie);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
-    <div className="movie-card">
-      <Link to={`/movie/${movie.id}?lang=${encodeURIComponent(language)}`} className="movie-link">
-        <img src={posterPath} alt={movie.title} />
-      </Link>
-      <div className="movie-info">
-        <h3>{movie.title}</h3>
-        <p>Rating: {rating}</p>
-        <p>{year}</p>
-        <button className="watchlist-small-btn" onClick={() => onAddWatchlist?.(movie)}>
-          Add to Watchlist
-        </button>
+    <div className="movie-card" onClick={handleAddWatchlist} title="Click to add to watchlist">
+      <div className="movie-card-inner">
+        <div className="movie-card-face movie-card-front">
+          <img src={posterPath} alt={movie.title} />
+          <div className="movie-card-info">
+            <h3>{movie.title}</h3>
+            <p>⭐ {rating}</p>
+            <span className="watchlist-hint">{isSaving ? 'Adding...' : 'Add to Watchlist'}</span>
+          </div>
+        </div>
+        <div className="movie-card-face movie-card-back">
+          <h3>{movie.title}</h3>
+          <p><strong>Rating:</strong> {rating}</p>
+          <p><strong>Release:</strong> {releaseDate}</p>
+          <p><strong>Language:</strong> {language}</p>
+          <p className="movie-overview">{overview}</p>
+          <span className="watchlist-hint">{isSaving ? 'Adding...' : 'Click to save'}</span>
+        </div>
       </div>
     </div>
   );
 };
 
 export default MovieCard;
-
