@@ -19,8 +19,8 @@ const MovieSlider = ({ title, movies, onMovieClick }) => {
       <div className="slider-container">
         <button className="slider-btn left" onClick={() => scroll('left')}>‹</button>
         <div className="slider-content" ref={sliderRef}>
-          {movies.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} onViewDetails={onMovieClick} />
+          {movies.map((movie, index) => (
+            <MovieCard key={`${movie.id}-${index}`} movie={movie} onViewDetails={onMovieClick} />
           ))}
         </div>
         <button className="slider-btn right" onClick={() => scroll('right')}>›</button>

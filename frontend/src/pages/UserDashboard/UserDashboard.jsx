@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import MovieSlider from '../../components/MovieSlider/MovieSlider';
+import ChatSupport from '../../components/ChatSupport/ChatSupport';
 import Footer from '../../components/Footer/Footer';
 import './UserDashboard.css';
 import {
@@ -98,6 +99,7 @@ const UserDashboard = () => {
   const preferredLang = profile?.language || 'English';
   const isSearchMode = searchQuery.trim().length > 0;
   const isWatchlistView = currentView === 'watchlist';
+  const isSupportView = currentView === 'support';
   const isUpcomingView = currentView === 'upcoming';
   const isTrendingView = currentView === 'trending';
   const currentPreferredMovies = isUpcomingView ? preferredUpcomingMovies : preferredTrendingMovies;
@@ -133,6 +135,7 @@ const UserDashboard = () => {
   };
 
   const handleMovieOpen = async (movie) => {
+    if (!movie?.id) return;
     setSelectedMovie(movie);
     setSelectedMovieDetails(null);
     setTrailerKey('');
@@ -177,7 +180,10 @@ const UserDashboard = () => {
     try {
       setActionLoading(true);
       await sendSupportMessage(
-        `Dubbing request: "${selectedMovieDetails.title}" in ${preferredLang} language.`
+        `Dubbing request: "${selectedMovieDetails.title}" in ${preferredLang} language.`,
+        'dub_request',
+        selectedMovieDetails.title,
+        preferredLang
       );
       alert('Dubbing request sent successfully');
     } catch {
@@ -255,6 +261,8 @@ const UserDashboard = () => {
               })}
             </div>
           </section>
+        ) : isSupportView ? (
+          <ChatSupport />
         ) : isSearchMode ? (
           <>
             {hasSearched && searchResults.length === 0 && <p className="empty-watchlist">No movies found for this search.</p>}

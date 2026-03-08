@@ -66,14 +66,16 @@ export const addWatchlist = (movie) => request('/watchlist', {
 
 export const deleteWatchlist = (id) => request(`/watchlist/${id}`, { method: 'DELETE' });
 
-export const sendSupportMessage = (message) => request('/support', {
+export const sendSupportMessage = (message, category = 'support', movieName = null, preferredLanguage = null) => request('/support', {
   method: 'POST',
-  body: JSON.stringify({ message })
+  body: JSON.stringify({ message, category, movie_name: movieName, preferred_language: preferredLanguage })
 });
+
+export const getSupportMessages = () => request('/support');
 
 export const getAdminStats = () => request('/admin/stats');
 
-export const getSupportMessages = () => request('/admin/support');
+export const getAdminSupportMessages = () => request('/admin/support');
 
 export const searchMovies = (query, language = 'English', page = 1) =>
   request(`/movies/search?query=${encodeURIComponent(query)}&language=${encodeURIComponent(language)}&page=${page}`)

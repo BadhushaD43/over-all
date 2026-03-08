@@ -16,6 +16,7 @@ const Sidebar = ({ onLogout, isOpen = false, onClose = () => {} }) => {
         <button onClick={() => go('/dashboard?view=trending')}>Trending</button>
         <button onClick={() => go('/dashboard?view=upcoming')}>Upcoming</button>
         <button onClick={() => go('/dashboard?view=watchlist')}>Watchlist</button>
+        <button onClick={() => go('/dashboard?view=support')}>24x7 Support</button>
         <button onClick={() => go('/profile')}>Settings</button>
         <button onClick={() => { onLogout(); onClose(); }} className="logout-btn">Logout</button>
       </nav>

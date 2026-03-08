@@ -61,3 +61,20 @@ def resolve_support_message(
     db.refresh(message)
     return message
 
+
+@router.patch("/support/{message_id}/forward-dubbing", response_model=SupportMessageResponse)
+def forward_to_dubbing_team(
+    message_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    message = db.query(SupportMessage).filter(SupportMessage.id == message_id).first()
+    if not message:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Support message not found.")
+
+    message.status = "forwarded_to_dubbing"
+    db.add(message)
+    db.commit()
+    db.refresh(message)
+    return message
+
