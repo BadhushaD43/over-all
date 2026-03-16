@@ -29,6 +29,11 @@
   padding: 0;
 }
 
+.footer-support-link {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
 .footer-section a:hover, .footer-section button:hover {
   color: var(--text-primary);
 }

@@ -134,7 +134,7 @@ def get_best_movies_by_language(language: str = "english", page: int = 1) -> lis
             "language": ui_language,
             "with_original_language": original_language,
             "sort_by": "popularity.desc",
-            "vote_count.gte": 100,
+            "vote_count.gte": 10,
             "include_adult": False,
             "primary_release_date.lte": today,
             "page": page,

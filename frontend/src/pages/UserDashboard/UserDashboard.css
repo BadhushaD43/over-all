@@ -13,26 +13,53 @@
   z-index: 1300;
   border: none;
   border-radius: 8px;
-  padding: 8px 12px;
-  background: var(--accent-primary);
+  padding: 12px 16px;
+  background: transparent;
   color: var(--text-primary);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  transition: all 0.3s ease;
+  opacity: 1;
+  visibility: visible;
+}
+
+.user-nav-toggle.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.user-nav-toggle:hover {
+  background: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .menu-icon {
   display: inline-flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .menu-icon span {
   display: block;
-  width: 14px;
-  height: 2px;
+  width: 20px;
+  height: 3px;
   background: var(--text-primary);
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+.close-icon {
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
 }
 
 .dashboard-main {

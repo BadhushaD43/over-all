@@ -45,6 +45,8 @@ const UserDashboard = () => {
   const [showPlayer, setShowPlayer] = useState(false);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+  const [movieLoading, setMovieLoading] = useState(false);
+  const [movieError, setMovieError] = useState('');
   const navigate = useNavigate();
   const currentView = new URLSearchParams(location.search).get('view') || 'dashboard';
 
@@ -57,10 +59,25 @@ const UserDashboard = () => {
         ]);
         setProfile(profileData);
         setWatchlist(watchlistData);
+      } catch {
+        navigate('/login');
+      }
+    };
 
-        const language = (profileData?.language || 'English').trim();
-        const region = (profileData?.region || 'USA').trim();
-        const [trending1, trending2, trending3, upcoming1, upcoming2, upcoming3, byLanguage] = await Promise.all([
+    loadData();
+  }, [navigate, currentView]);
+
+  useEffect(() => {
+    if (!profile) return;
+    let cancelled = false;
+
+    const loadMovies = async () => {
+      try {
+        setMovieLoading(true);
+        setMovieError('');
+        const language = (profile?.language || 'English').trim();
+        const region = (profile?.region || 'USA').trim();
+        const results = await Promise.allSettled([
           getTrendingMovies(language, 1),
           getTrendingMovies(language, 2),
           getTrendingMovies(language, 3),
@@ -69,6 +86,17 @@ const UserDashboard = () => {
           getUpcomingMovies(language, region, 3),
           getTrendingByLanguage()
         ]);
+
+        if (cancelled) return;
+
+        const extract = (result) => (result.status === 'fulfilled' ? result.value : []);
+        const trending1 = extract(results[0]);
+        const trending2 = extract(results[1]);
+        const trending3 = extract(results[2]);
+        const upcoming1 = extract(results[3]);
+        const upcoming2 = extract(results[4]);
+        const upcoming3 = extract(results[5]);
+        const byLanguage = results[6].status === 'fulfilled' ? results[6].value : {};
 
         const fallbackPreferredTrending = [...(trending1 || []), ...(trending2 || []), ...(trending3 || [])];
         const fallbackPreferredUpcoming = [...(upcoming1 || []), ...(upcoming2 || []), ...(upcoming3 || [])];
@@ -83,13 +111,28 @@ const UserDashboard = () => {
           byGenre[genre.key] = trendingMovies.filter((movie) => (movie.genre_ids || []).includes(genre.id));
         });
         setGenreMovies(byGenre);
-      } catch {
-        navigate('/login');
+
+        if (results.some((r) => r.status === 'rejected')) {
+          setMovieError('Some movies failed to load. Please try again.');
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setMovieError(err?.message || 'Failed to load movies.');
+          setPreferredTrendingMovies([]);
+          setPreferredUpcomingMovies([]);
+          setGenreMovies({});
+        }
+      } finally {
+        if (!cancelled) setMovieLoading(false);
       }
     };
 
-    loadData();
-  }, [navigate, currentView]);
+    loadMovies();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [profile?.language, profile?.region]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -183,7 +226,8 @@ const UserDashboard = () => {
         `Dubbing request: "${selectedMovieDetails.title}" in ${preferredLang} language.`,
         'dub_request',
         selectedMovieDetails.title,
-        preferredLang
+        preferredLang,
+        selectedMovieDetails.id
       );
       alert('Dubbing request sent successfully');
     } catch {
@@ -205,10 +249,16 @@ const UserDashboard = () => {
     ? `https://image.tmdb.org/t/p/w300${details.poster_path}`
     : 'https://placehold.co/300x450?text=No+Poster';
   const detailsLanguage = details?.original_language?.toUpperCase() || 'N/A';
+  const dubbedLanguages = Array.isArray(details?.dubbed_languages) && details.dubbed_languages.length > 0
+    ? details.dubbed_languages.join(', ')
+    : 'Not available';
 
   return (
     <div className="user-dashboard">
-      <button className="user-nav-toggle" onClick={() => setSidebarOpen((prev) => !prev)}>
+      <button 
+        className={`user-nav-toggle ${sidebarOpen ? 'hidden' : ''}`} 
+        onClick={() => setSidebarOpen((prev) => !prev)}
+      >
         <span className="menu-icon" aria-hidden="true">
           <span />
           <span />
@@ -242,6 +292,13 @@ const UserDashboard = () => {
             </button>
           </form>
         </div>
+
+        {movieLoading && !isWatchlistView && !isSupportView && !isSearchMode && (
+          <p className="dashboard-error">Loading latest movies...</p>
+        )}
+        {movieError && !isWatchlistView && !isSupportView && !isSearchMode && (
+          <p className="dashboard-error">{movieError}</p>
+        )}
 
         {isWatchlistView ? (
           <section className="watchlist-section">
@@ -322,6 +379,7 @@ const UserDashboard = () => {
                       <h2>{details?.title}</h2>
                       <p><strong>Rating:</strong> {Number(details?.rating || 0).toFixed(2)}</p>
                       <p><strong>Language:</strong> {detailsLanguage}</p>
+                      <p><strong>Dubbed Languages:</strong> {dubbedLanguages}</p>
                       <p><strong>Release:</strong> {details?.release_date || 'Unknown'}</p>
                       <p><strong>Runtime:</strong> {details?.runtime ? `${details.runtime} min` : 'N/A'}</p>
                       <p><strong>Genres:</strong> {Array.isArray(details?.genres) ? details.genres.join(', ') : 'N/A'}</p>

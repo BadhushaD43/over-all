@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './AdminStats.css';
-import { getAdminStats, getSupportMessages } from '../../services/api';
+import { getAdminStats, getAdminSupportMessages } from '../../services/api';
 
 const AdminStats = () => {
   const [stats, setStats] = useState(null);
@@ -11,7 +11,7 @@ const AdminStats = () => {
       try {
         const [statsData, messagesData] = await Promise.all([
           getAdminStats(),
-          getSupportMessages()
+          getAdminSupportMessages()
         ]);
         setStats(statsData);
         setMessages(messagesData);
@@ -35,15 +35,15 @@ const AdminStats = () => {
         </div>
         <div className="stat-card">
           <h3>Active Sessions</h3>
-          <p className="stat-number">{stats?.active_sessions || 0}</p>
+          <p className="stat-number">{messages.filter((msg) => msg.status === 'processing').length}</p>
         </div>
       </div>
 
       <div className="messages-section">
         <h3>Recent Support Messages</h3>
-        {messages.map((msg) => (
+        {messages.filter((msg) => msg.category === 'support').slice(0, 5).map((msg) => (
           <div key={msg.id} className="message-card">
-            <p><strong>{msg.user_email}</strong></p>
+            <p><strong>User {msg.user_id}</strong></p>
             <p>{msg.message}</p>
             <span className="message-time">{new Date(msg.created_at).toLocaleString()}</span>
           </div>

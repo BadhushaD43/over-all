@@ -30,13 +30,14 @@ def create_support_message(
 ):
     support_message = SupportMessage(
         user_id=current_user.id,
+        movie_id=payload.movie_id,
         category=payload.category,
         movie_name=payload.movie_name,
         preferred_language=payload.preferred_language,
         message=payload.message,
+        status="processing",
     )
     db.add(support_message)
     db.commit()
     db.refresh(support_message)
     return support_message
-

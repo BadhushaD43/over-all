@@ -57,15 +57,18 @@ const UserProfile = ({ profile, onUpdate = () => {} }) => {
             value={formData.name || ''}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="Name"
+            className="compact-input"
           />
           <input
             value={formData.phone || ''}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             placeholder="Phone"
+            className="compact-input"
           />
           <select
             value={formData.language || ''}
             onChange={(e) => setFormData({ ...formData, language: e.target.value })}
+            className="compact-input"
           >
             <option>English</option>
             <option>Spanish</option>
@@ -78,6 +81,7 @@ const UserProfile = ({ profile, onUpdate = () => {} }) => {
           <select
             value={formData.region || ''}
             onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+            className="compact-input"
           >
             <option>USA</option>
             <option>UK</option>
@@ -101,32 +105,33 @@ const UserProfile = ({ profile, onUpdate = () => {} }) => {
             placeholder="Current Password"
             value={passwords.current}
             onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+            className="compact-input"
           />
           <input
             type="password"
             placeholder="New Password"
             value={passwords.new}
             onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+            className="compact-input"
           />
           <input
             type="password"
             placeholder="Confirm Password"
             value={passwords.confirm}
             onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
+            className="compact-input"
           />
           <button onClick={handlePasswordChange}>Update Password</button>
         </div>
       )}
 
       <div className="dark-mode-toggle">
-        <label>
-          <input
-            type="checkbox"
-            checked={darkMode}
-            onChange={(e) => setDarkMode(e.target.checked)}
-          />
-          Dark Mode
-        </label>
+        <button 
+          onClick={() => setDarkMode(!darkMode)}
+          className={`dark-mode-btn ${darkMode ? 'active' : ''}`}
+        >
+          {darkMode ? '🌙' : '☀️'} {darkMode ? 'Dark Mode' : 'Light Mode'}
+        </button>
       </div>
     </div>
   );

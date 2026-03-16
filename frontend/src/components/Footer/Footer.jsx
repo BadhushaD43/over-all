@@ -3,17 +3,17 @@ import './Footer.css';
 import { sendSupportMessage } from '../../services/api';
 
 const Footer = () => {
-  const [chatOpen, setChatOpen] = useState(false);
-  const [message, setMessage] = useState('');
   const [dubbingOpen, setDubbingOpen] = useState(false);
+  const [dubbingMessage, setDubbingMessage] = useState('');
 
-  const handleSendMessage = async (e) => {
+  const handleDubbingSend = async (e) => {
     e.preventDefault();
-    if (message.trim()) {
+    if (dubbingMessage.trim()) {
       try {
-        await sendSupportMessage(message);
-        alert('Message sent! We will respond within 24 hours.');
-        setMessage('');
+        await sendSupportMessage(dubbingMessage, 'dub_request');
+        alert('Dubbing request sent! We will respond within 24 hours.');
+        setDubbingMessage('');
+        setDubbingOpen(false);
       } catch {
         alert('Please login to send messages');
       }
@@ -37,43 +37,24 @@ const Footer = () => {
           <div className="footer-section">
             <h4>Support</h4>
             <button onClick={() => setDubbingOpen(true)}>Request Dubbing</button>
-            <button onClick={() => setChatOpen(true)}>24x7 Chat</button>
+            <a className="footer-support-link" href="/dashboard?view=support">24x7 Support</a>
           </div>
         </div>
-        <p className="footer-bottom">© 2024 MovieStream. All rights reserved.</p>
+        <p className="footer-bottom">(c) 2026 My <strong>B</strong> Stream. All rights reserved.</p>
       </footer>
-
-      {chatOpen && (
-        <div className="chat-modal">
-          <div className="chat-box">
-            <div className="chat-header">
-              <h3>24x7 Support</h3>
-              <button onClick={() => setChatOpen(false)}>✕</button>
-            </div>
-            <form onSubmit={handleSendMessage}>
-              <textarea
-                placeholder="Type your message..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
-              <button type="submit">Send</button>
-            </form>
-          </div>
-        </div>
-      )}
 
       {dubbingOpen && (
         <div className="chat-modal">
           <div className="chat-box">
             <div className="chat-header">
               <h3>Request Dubbing</h3>
-              <button onClick={() => setDubbingOpen(false)}>✕</button>
+              <button onClick={() => setDubbingOpen(false)}>X</button>
             </div>
-            <form onSubmit={handleSendMessage}>
+            <form onSubmit={handleDubbingSend}>
               <textarea
                 placeholder="Enter movie name and preferred language..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                value={dubbingMessage}
+                onChange={(e) => setDubbingMessage(e.target.value)}
               />
               <button type="submit">Submit Request</button>
             </form>

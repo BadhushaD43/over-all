@@ -66,9 +66,15 @@ export const addWatchlist = (movie) => request('/watchlist', {
 
 export const deleteWatchlist = (id) => request(`/watchlist/${id}`, { method: 'DELETE' });
 
-export const sendSupportMessage = (message, category = 'support', movieName = null, preferredLanguage = null) => request('/support', {
+export const sendSupportMessage = (message, category = 'support', movieName = null, preferredLanguage = null, movieId = null) => request('/support', {
   method: 'POST',
-  body: JSON.stringify({ message, category, movie_name: movieName, preferred_language: preferredLanguage })
+  body: JSON.stringify({
+    message,
+    category,
+    movie_name: movieName,
+    preferred_language: preferredLanguage,
+    movie_id: movieId
+  })
 });
 
 export const getSupportMessages = () => request('/support');

@@ -60,6 +60,7 @@ def ensure_database_exists():
 def startup_event():
     ensure_database_exists()
     Base.metadata.create_all(bind=engine)
+    ensure_support_message_movie_id()
 
     db = SessionLocal()
     try:
@@ -79,3 +80,24 @@ def startup_event():
             db.commit()
     finally:
         db.close()
+
+
+def ensure_support_message_movie_id():
+    try:
+        with engine.begin() as conn:
+            if engine.dialect.name == "sqlite":
+                columns = [row[1] for row in conn.execute(text("PRAGMA table_info(support_messages)"))]
+                if "movie_id" not in columns:
+                    conn.execute(text("ALTER TABLE support_messages ADD COLUMN movie_id INTEGER"))
+            else:
+                columns = conn.execute(
+                    text(
+                        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS "
+                        "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'support_messages'"
+                    )
+                ).fetchall()
+                column_names = {row[0] for row in columns}
+                if "movie_id" not in column_names:
+                    conn.execute(text("ALTER TABLE support_messages ADD COLUMN movie_id INTEGER NULL"))
+    except Exception:
+        pass

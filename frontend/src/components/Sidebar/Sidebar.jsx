@@ -10,13 +10,15 @@ const Sidebar = ({ onLogout, isOpen = false, onClose = () => {} }) => {
 
   return (
     <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
-      <h2>MovieStream</h2>
+      <div className="sidebar-header">
+        <h2>MovieStream</h2>
+        <button className="sidebar-close" onClick={onClose}>✕</button>
+      </div>
       <nav className="sidebar-nav">
         <button onClick={() => go('/dashboard')}>Dashboard</button>
         <button onClick={() => go('/dashboard?view=trending')}>Trending</button>
         <button onClick={() => go('/dashboard?view=upcoming')}>Upcoming</button>
         <button onClick={() => go('/dashboard?view=watchlist')}>Watchlist</button>
-        <button onClick={() => go('/dashboard?view=support')}>24x7 Support</button>
         <button onClick={() => go('/profile')}>Settings</button>
         <button onClick={() => { onLogout(); onClose(); }} className="logout-btn">Logout</button>
       </nav>

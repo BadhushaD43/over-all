@@ -15,7 +15,7 @@ from app.services.tmdb_service import (
     resolve_region_code,
     search_movies,
 )
-from app.models.models import User
+from app.models.models import MovieDubbedLanguage, User
 from app.database.session import get_db
 from app.utils.auth import get_user_id_from_token
 
@@ -149,12 +149,19 @@ def region_recommendations(
 def movie_details(
     movie_id: int,
     language: str | None = Query(default=None),
-    current_user: User | None = Depends(get_optional_user)
+    current_user: User | None = Depends(get_optional_user),
+    db: Session = Depends(get_db),
 ):
     lang = current_user.language if current_user else (language or "English")
     details = get_movie_details(movie_id=movie_id, language=resolve_language_code(lang))
     if not details.get("id"):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Movie not found.")
+    dubbed = (
+        db.query(MovieDubbedLanguage.language)
+        .filter(MovieDubbedLanguage.movie_id == movie_id)
+        .all()
+    )
+    details["dubbed_languages"] = [row[0] for row in dubbed]
     return details
 
 

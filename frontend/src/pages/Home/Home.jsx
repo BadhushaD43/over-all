@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 import HeroSection from '../../components/HeroSection/HeroSection';
 import MovieSlider from '../../components/MovieSlider/MovieSlider';
+import MovieDetailModal from '../../components/MovieDetailModal/MovieDetailModal';
 import Footer from '../../components/Footer/Footer';
 import './Home.css';
 import { getTodayMovieCollection, getTrendingByLanguage, getTrendingMovies, getUpcomingMovies, LANGUAGES } from '../../services/api';
@@ -15,6 +16,9 @@ const Home = () => {
   const [todayCollectionMovies, setTodayCollectionMovies] = useState([]);
   const [todayDate, setTodayDate] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [selectedMovie, setSelectedMovie] = useState(null);
+  
   const currentView = (() => {
     if (location.pathname === '/upcoming') return 'upcoming';
     if (location.pathname === '/trending') return 'trending';
@@ -22,22 +26,42 @@ const Home = () => {
     return view === 'upcoming' ? 'upcoming' : 'trending';
   })();
 
+  const handleMovieClick = (movie) => {
+    setSelectedMovie(movie);
+  };
+
+  const closeModal = () => {
+    setSelectedMovie(null);
+  };
+
   useEffect(() => {
     const loadMovies = async () => {
       try {
-        const [byLanguage, trending, upcoming, todayCollection] = await Promise.all([
-          getTrendingByLanguage(),
-          getTrendingMovies('English'),
-          getUpcomingMovies('English', 'USA'),
+        setError('');
+        const tasks = [
+          getTrendingByLanguage()
+            .then((byLanguage) => setMovies(byLanguage || {}))
+            .catch(() => setMovies({})),
+          getTrendingMovies('English')
+            .then((trending) => setTrendingMovies(trending || []))
+            .catch(() => setTrendingMovies([])),
+          getUpcomingMovies('English', 'USA')
+            .then((upcoming) => setUpcomingMovies(upcoming || []))
+            .catch(() => setUpcomingMovies([])),
           getTodayMovieCollection('English', 'USA')
-        ]);
-        setMovies(byLanguage || {});
-        setTrendingMovies(trending || []);
-        setUpcomingMovies(upcoming || []);
-        setTodayCollectionMovies(todayCollection?.results || []);
-        setTodayDate(todayCollection?.today_date || '');
+            .then((todayCollection) => {
+              setTodayCollectionMovies(todayCollection?.results || []);
+              setTodayDate(todayCollection?.today_date || '');
+            })
+            .catch(() => {
+              setTodayCollectionMovies([]);
+              setTodayDate('');
+            })
+        ];
+        await Promise.allSettled(tasks);
       } catch (err) {
-        console.error(err);
+        console.error('Error loading movies:', err);
+        setError('Failed to load movies. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -49,27 +73,27 @@ const Home = () => {
     <div className="home">
       <Navbar />
       <HeroSection />
-      {loading ? (
-        <p className="loading">Loading movies...</p>
-      ) : (
-        <>
-          <MovieSlider title={`Today Collection (${todayDate || 'Live'})`} movies={todayCollectionMovies} />
-          {currentView === 'trending' ? (
-            <MovieSlider title="Trending Movies" movies={trendingMovies} />
-          ) : (
-            <MovieSlider title="Upcoming Movies" movies={upcomingMovies} />
-          )}
+      {loading && <p className="loading">Loading movies...</p>}
+      {error && <p className="loading">{error}</p>}
+      <>
+        <MovieSlider title={`Today Collection (${todayDate || 'Live'})`} movies={todayCollectionMovies} onMovieClick={handleMovieClick} />
+        {currentView === 'trending' ? (
+          <MovieSlider title="Trending Movies" movies={trendingMovies} onMovieClick={handleMovieClick} />
+        ) : (
+          <MovieSlider title="Upcoming Movies" movies={upcomingMovies} onMovieClick={handleMovieClick} />
+        )}
 
-          <h2 className="home-section-title">Trending By Language</h2>
-          {LANGUAGES.map((lang) => (
-            <MovieSlider
-              key={lang}
-              title={`${lang} Movies`}
-              movies={movies[lang] || []}
-            />
-          ))}
-        </>
-      )}
+        <h2 className="home-section-title">Trending By Language</h2>
+        {LANGUAGES.map((lang) => (
+          <MovieSlider
+            key={lang}
+            title={`${lang} Movies`}
+            movies={movies[lang] || []}
+            onMovieClick={handleMovieClick}
+          />
+        ))}
+      </>
+      {selectedMovie && <MovieDetailModal movie={selectedMovie} onClose={closeModal} />}
       <Footer />
     </div>
   );
